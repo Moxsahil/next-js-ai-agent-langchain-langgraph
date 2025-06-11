@@ -14,7 +14,7 @@ export default function DashboardPage() {
               <BotIcon className="w-12 h-12 text-gray-600" />
             </div>
             <h2 className="text-2xl font-semibold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Welcome to Moxsh AI agent
+              Welcome to Moxsh AI
             </h2>
             <p className="text-gray-600 max-w-md mx-auto">
               Start a new conversation or select an existing chat from the
