@@ -1,14 +1,16 @@
-import { getConvexClient } from "@/lib/convex";
+import { submitQuestion } from "@/lib/langgraph";
+import { api } from "@/convex/_generated/api";
+import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-
+import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
+import { getConvexClient } from "@/lib/convex";
 import {
   ChatRequestBody,
-  SSE_DATA_PREFIX,
-  SSE_LINE_DELIMITER,
   StreamMessage,
   StreamMessageType,
+  SSE_DATA_PREFIX,
+  SSE_LINE_DELIMITER,
 } from "@/lib/types";
-import { api } from "@/convex/_generated/api";
 
 export const runtime = "edge";
 
@@ -24,16 +26,6 @@ function sendSSEMessage(
   );
 }
 
-/**
- * This is an Edge Function that handles a POST request to start a
- * new chat session. It is responsible for authenticating the user,
- * getting the chat id and the new message from the request body,
- * and initiating a Server Sent Event (SSE) stream to send
- * messages to the client. The SSE stream is terminated when the
- * client closes the connection.
- * @param req - The incoming request object.
- * @returns A Response object that contains the SSE stream.
- */
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -43,35 +35,113 @@ export async function POST(req: Request) {
 
     const { messages, newMessage, chatId } =
       (await req.json()) as ChatRequestBody;
-
     const convex = getConvexClient();
 
-    const stream = new TransformStream(
-      {},
-      {
-        highWaterMark: 1024,
-      }
-    );
+    // Create stream with larger queue strategy for better performance
+    const stream = new TransformStream({}, { highWaterMark: 1024 });
     const writer = stream.writable.getWriter();
 
     const response = new Response(stream.readable, {
       headers: {
         "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache, no-transform",
+        // "Cache-Control": "no-cache, no-transform",
         Connection: "keep-alive",
-        "X-Accel-Buffering": "no", // Disable buffering fro nginx which is required for SSE to work properly
+        "X-Accel-Buffering": "no", // Disable buffering for nginx which is required for SSE to work properly
       },
     });
 
-    async () => {
+    // Handle the streaming response
+    (async () => {
       try {
+        // Send initial connection established message
         await sendSSEMessage(writer, { type: StreamMessageType.Connected });
 
+        // Send user message to Convex
         await convex.mutation(api.messages.send, {
           chatId,
           content: newMessage,
         });
-      } catch (error) {}
-    };
-  } catch (error) {}
+
+        // Convert messages to LangChain format
+        const langChainMessages = [
+          ...messages.map((msg) =>
+            msg.role === "user"
+              ? new HumanMessage(msg.content)
+              : new AIMessage(msg.content)
+          ),
+          new HumanMessage(newMessage),
+        ];
+
+        try {
+          // Create the event stream
+          const eventStream = await submitQuestion(langChainMessages, chatId);
+
+          // Process the events
+          for await (const event of eventStream) {
+            // console.log("🔄 Event:", event);
+
+            if (event.event === "on_chat_model_stream") {
+              const token = event.data.chunk;
+              if (token) {
+                // Access the text property from the AIMessageChunk
+                const text = token.content.at(0)?.["text"];
+                if (text) {
+                  await sendSSEMessage(writer, {
+                    type: StreamMessageType.Token,
+                    token: text,
+                  });
+                }
+              }
+            } else if (event.event === "on_tool_start") {
+              await sendSSEMessage(writer, {
+                type: StreamMessageType.ToolStart,
+                tool: event.name || "unknown",
+                input: event.data.input,
+              });
+            } else if (event.event === "on_tool_end") {
+              const toolMessage = new ToolMessage(event.data.output);
+
+              await sendSSEMessage(writer, {
+                type: StreamMessageType.ToolEnd,
+                tool: toolMessage.lc_kwargs.name || "unknown",
+                output: event.data.output,
+              });
+            }
+          }
+
+          // Send completion message without storing the response
+          await sendSSEMessage(writer, { type: StreamMessageType.DONE });
+        } catch (streamError) {
+          console.error("Error in event stream:", streamError);
+          await sendSSEMessage(writer, {
+            type: StreamMessageType.ERROR,
+            error:
+              streamError instanceof Error
+                ? streamError.message
+                : "Stream processing failed",
+          });
+        }
+      } catch (error) {
+        console.error("Error in stream:", error);
+        await sendSSEMessage(writer, {
+          type: StreamMessageType.ERROR,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      } finally {
+        try {
+          await writer.close();
+        } catch (closeError) {
+          console.error("Error closing writer:", closeError);
+        }
+      }
+    })();
+
+    return response;
+  } catch (error) {
+    console.error("Error in chat API:", error);
+    return NextResponse.json(
+      { error: "Failed to process chat request" } as const,
+      { status: 500 }
+    );
+  }
 }

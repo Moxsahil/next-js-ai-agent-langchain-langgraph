@@ -48,7 +48,7 @@ function ChatRow({
           <Button
             variant="ghost"
             size="icon"
-            className="opacity-0 group-hover:opacity-100 -mr-2 -mt-2 ml-2 transition-opacity duration-200"
+            className="opacity-0 group-hover:opacity-100 -mr-4 -mt-4 ml-4 transition-opacity duration-200"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(chat._id);
@@ -99,14 +99,14 @@ export default function Sidebar() {
 
       <div
         className={cn(
-          "fixed md:inset-y-0 top-14 bottom-0 left-0 z-50 w-72 bg-gray-50/80 backdrop-blur-xl border-r border-gray-200/50 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:top-0 flex flex-col",
+          "fixed md:inset-y-0 top-14 rounded-b-xl bottom-0 left-0 z-50 w-72 bg-blue-300 backdrop-blur-xl border-r border-blue-300 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:top-0 flex flex-col overflow-hidden",
           isMobileNavOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="p-4 border-b border-gray-200/50">
+        <div className="p-4 border-b border-blue-300">
           <Button
             onClick={handleNewChat}
-            className="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/50 shadow-sm hover:shadow transition-all duration-200"
+            className="w-full bg-orange-400 hover:bg-blue-500 text-gray-700 border border-gray-200/50 shadow-sm hover:shadow transition-all duration-200"
           >
             <PlusIcon className="mr-2 h-4 w-4" /> New Chat
           </Button>
