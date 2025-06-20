@@ -31,8 +31,8 @@ export function MessageBubble({ content, isUser }: MessageBubbleProps) {
       <div
         className={`rounded-2xl px-4 py-2.5 max-w-[85%] md:max-w-[75%] shadow-sm ring-1 ring-inset relative ${
           isUser
-            ? "bg-blue-600 text-white rounded-br-none ring-blue-700"
-            : "bg-white text-gray-900 rounded-bl-none ring-gray-200"
+            ? "bg-[#303030] text-white rounded-br-none ring-gray-300/20"
+            : "bg-white text-gray-900 rounded-bl-none ring-gray-200/30"
         }`}
       >
         <div className="whitespace-pre-wrap text-[15px] leading-relaxed">
@@ -47,7 +47,9 @@ export function MessageBubble({ content, isUser }: MessageBubbleProps) {
         >
           <div
             className={`w-8 h-8 rounded-full border-2 ${
-              isUser ? "bg-white border-gray-100" : "bg-blue-600 border-white"
+              isUser
+                ? "bg-white border-gray-100/20"
+                : "bg-blue-600 border-white"
             } flex items-center justify-center shadow-sm`}
           >
             {isUser ? (

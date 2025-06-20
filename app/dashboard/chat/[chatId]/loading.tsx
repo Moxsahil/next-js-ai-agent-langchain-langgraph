@@ -1,8 +1,10 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Loading() {
   const numMessages = Math.floor(Math.random() * 5) + 2;
 
   return (
-    <div className="flex-1 overflow-hidden bg-gray-50">
+    <div className="flex-1 overflow-hidden bg-[#30302E]">
       {/* Messages section */}
       <div className="h-[calc(100vh-65px)] flex flex-col">
         <div className="flex-1 overflow-y-auto p-4">
@@ -16,18 +18,24 @@ export default function Loading() {
                   className={`w-2/3 rounded-2xl p-4 ${
                     i % 2 === 0
                       ? "bg-blue-600/10 rounded-br-none"
-                      : "bg-white rounded-bl-none border border-gray-200"
+                      : "bg-gray-600/10 rounded-bl-none border border-gray-500"
                   }`}
                 >
                   <div className="space-y-3">
-                    <div
-                      className={`h-4 animate-pulse rounded w-[90%] ${i % 2 === 0 ? "bg-white/40" : "bg-gray-200"}`}
+                    <Skeleton
+                      className={`h-4 w-[90%] ${
+                        i % 2 === 0 ? "bg-white/40" : "bg-gray-400"
+                      }`}
                     />
-                    <div
-                      className={`h-4 animate-pulse rounded w-[75%] ${i % 2 === 0 ? "bg-white/40" : "bg-gray-200"}`}
+                    <Skeleton
+                      className={`h-4 w-[75%] ${
+                        i % 2 === 0 ? "bg-white/40" : "bg-gray-400"
+                      }`}
                     />
-                    <div
-                      className={`h-4 animate-pulse rounded w-[60%] ${i % 2 === 0 ? "bg-white/40" : "bg-gray-200"}`}
+                    <Skeleton
+                      className={`h-4 w-[60%] ${
+                        i % 2 === 0 ? "bg-white/40" : "bg-gray-400"
+                      }`}
                     />
                   </div>
                 </div>
@@ -37,9 +45,9 @@ export default function Loading() {
         </div>
 
         {/* Input section */}
-        <div className="border-t bg-white p-4">
+        <div className="border-t bg-[#30302E] p-4">
           <div className="max-w-4xl mx-auto">
-            <div className="h-12 bg-gray-100 rounded-full animate-pulse" />
+            <Skeleton className="h-12 rounded-full bg-gray-400" />
           </div>
         </div>
       </div>

@@ -1,28 +1,14 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { useNavigation } from "@/lib/context/navigation";
 
 export default function Header() {
-  const { setIsMobileNavOpen } = useNavigation();
-
   return (
-    <header className=" bg-blue-300 backdrop-blur-xl sticky top-0 z-50">
+    <header className="bg-[#30302E] bg-opacity-50 backdrop-blur-xl sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileNavOpen(true)}
-            className="md:hidden text-gray-500 hover:text-gray-700 hover:bg-gray-100/50"
-          >
-            <HamburgerMenuIcon className="h-5 w-5" />
-          </Button>
-          <div className="font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-            Chat with Moxsh AI
-          </div>
+          {/* Hamburger button removed */}
+          {/* TODO: You can add branding here if you want */}
         </div>
         <div className="flex items-center">
           <UserButton

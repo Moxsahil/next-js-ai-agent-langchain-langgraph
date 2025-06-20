@@ -16,12 +16,13 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const closeMobileNav = () => setIsMobileNavOpen(false);
+
   return (
-    <NavigationContext
+    <NavigationContext.Provider
       value={{ isMobileNavOpen, setIsMobileNavOpen, closeMobileNav }}
     >
       {children}
-    </NavigationContext>
+    </NavigationContext.Provider>
   );
 }
 
