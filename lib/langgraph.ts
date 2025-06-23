@@ -6,6 +6,8 @@ import {
   trimMessages,
 } from "@langchain/core/messages";
 import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatOpenAI } from "@langchain/openai";
+
 import {
   END,
   MessagesAnnotation,
@@ -43,17 +45,12 @@ const toolNode = new ToolNode(tools);
 
 // Connect to the LLM provider with better tool instructions
 const initialiseModel = () => {
-  const model = new ChatAnthropic({
-    modelName: "claude-3-5-sonnet-20241022",
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+  const model = new ChatOpenAI({
+    modelName: "gpt-4o", // or "gpt-4", "gpt-3.5-turbo"
+    openAIApiKey: process.env.OPENAI_API_KEY,
     temperature: 0.7,
     maxTokens: 4096,
     streaming: true,
-    clientOptions: {
-      defaultHeaders: {
-        "anthropic-beta": "prompt-caching-2024-07-31",
-      },
-    },
     callbacks: [
       {
         handleLLMStart: async () => {
@@ -61,27 +58,54 @@ const initialiseModel = () => {
         },
         handleLLMEnd: async (output) => {
           console.log("🤖 End LLM call", output);
-          const usage = output.llmOutput?.usage;
-          if (usage) {
-            // console.log("📊 Token Usage:", {
-            //   input_tokens: usage.input_tokens,
-            //   output_tokens: usage.output_tokens,
-            //   total_tokens: usage.input_tokens + usage.output_tokens,
-            //   cache_creation_input_tokens:
-            //     usage.cache_creation_input_tokens || 0,
-            //   cache_read_input_tokens: usage.cache_read_input_tokens || 0,
-            // });
-          }
         },
-        // handleLLMNewToken: async (token: string) => {
-        //   // console.log("🔤 New token:", token);
-        // },
       },
     ],
-  }).bindTools(tools);
+  }).bindTools(tools); // if you are using tool calling
 
   return model;
 };
+
+// const initialiseModel = () => {
+//   const model = new ChatAnthropic({
+//     modelName: "claude-3-5-sonnet-20241022",
+//     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+//     temperature: 0.7,
+//     maxTokens: 4096,
+//     streaming: true,
+//     clientOptions: {
+//       defaultHeaders: {
+//         "anthropic-beta": "prompt-caching-2024-07-31",
+//       },
+//     },
+//     callbacks: [
+//       {
+//         handleLLMStart: async () => {
+//           // console.log("🤖 Starting LLM call");
+//         },
+//         handleLLMEnd: async (output) => {
+//           console.log("🤖 End LLM call", output);
+//           const usage = output.llmOutput?.usage;
+//           if (usage) {
+//             // console.log("📊 Token Usage:", {
+//             //   input_tokens: usage.input_tokens,
+//             //   output_tokens: usage.output_tokens,
+//             //   total_tokens: usage.input_tokens + usage.output_tokens,
+//             //   cache_creation_input_tokens:
+//             //     usage.cache_creation_input_tokens || 0,
+//             //   cache_read_input_tokens: usage.cache_read_input_tokens || 0,
+//             // });
+//           }
+//         },
+//         // handleLLMNewToken: async (token: string) => {
+//         //   // console.log("🔤 New token:", token);
+//         // },
+//       },
+//     ],
+//   }).bindTools(tools);
+
+//   return model;
+// };
 
 // Define the function that determines whether to continue or not
 function shouldContinue(state: typeof MessagesAnnotation.State) {

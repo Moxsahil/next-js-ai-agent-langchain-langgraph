@@ -9,7 +9,7 @@ import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useNavigation } from "@/lib/context/navigation";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -88,15 +88,23 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Toggle Icon */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setIsMobileNavOpen(true)}
-          className="bg-[#30302E] p-2 rounded-md shadow-md hover:bg-[#1F1E1D] transition"
-        >
-          <Menu className="text-white w-5 h-5" />
-        </button>
-      </div>
+      {/* Menu Icon (Mobile) - only show when sidebar is closed */}
+      {!isMobileNavOpen && (
+        <div className="md:hidden fixed top-4 left-4 z-50">
+          <button
+            onClick={() => setIsMobileNavOpen(true)}
+            className="bg-[#30302E] p-1 rounded-md  hover:bg-[#1F1E1D] transition"
+          >
+            <Image
+              src="/Images/Menu.png"
+              alt="Menu Icon"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
+          </button>
+        </div>
+      )}
 
       {/* Mobile Backdrop */}
       {isMobileNavOpen && (
@@ -111,52 +119,79 @@ export default function Sidebar() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(true)}
         className={cn(
-          "fixed md:inset-y-0 top-14 bottom-0 left-0 z-50 bg-[#30302E] backdrop-blur-xl transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 md:top-0 flex flex-col overflow-hidden",
+          "fixed md:inset-y-0 top-0 bottom-0 left-0 z-50 bg-[#30302E] backdrop-blur-xl transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 md:top-0 flex flex-col overflow-hidden",
           isMobileNavOpen ? "translate-x-0" : "-translate-x-full",
           isMobileNavOpen ? "w-72" : isCollapsed ? "w-16" : "w-72"
         )}
       >
-        {/* Top Logo + Collapse Toggle */}
+        {/* Top Header (Logo and Collapse) */}
         <div
           className={cn(
             "flex items-center border-b border-[#30302E] transition-all duration-300 h-16 px-3",
             isCollapsed ? "justify-center" : "justify-between"
           )}
         >
-          {!isCollapsed && (
-            <Link href="/" onClick={closeMobileNav}>
-              <Image
-                src="/Images/logo.png"
-                alt="Moxsh AI Logo"
-                width={120}
-                height={40}
-                className="transition-all object-contain w-[72px]"
-                priority
-              />
-            </Link>
-          )}
-
-          {(isHovered || !isCollapsed) && (
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className={cn(
-                "text-gray-400 hover:text-white transition",
-                isCollapsed && "mx-auto"
+          {/* Mobile Close (X) icon */}
+          {isMobileNavOpen ? (
+            <>
+              <Link href="/" onClick={closeMobileNav}>
+                <Image
+                  src="/Images/logo.png"
+                  alt="Moxsh AI Logo"
+                  width={120}
+                  height={40}
+                  className="transition-all object-contain w-[72px]"
+                  priority
+                />
+              </Link>
+              <div className="flex justify-end w-full">
+                <button onClick={closeMobileNav}>
+                  <X className="w-5 h-5 text-white hover:text-red-500 transition" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {!isCollapsed && (
+                <Link href="/" onClick={closeMobileNav}>
+                  <Image
+                    src="/Images/logo.png"
+                    alt="Moxsh AI Logo"
+                    width={120}
+                    height={40}
+                    className="transition-all object-contain w-[72px]"
+                    priority
+                  />
+                </Link>
               )}
-            >
-              <Image
-                src="/Images/sidebar.png"
-                alt="sidebar icon"
-                width={20}
-                height={20}
-                className="object-contain"
-              />
-            </button>
+
+              {(isHovered || !isCollapsed) && (
+                <button
+                  onClick={() => setIsCollapsed(!isCollapsed)}
+                  className={cn(
+                    "text-gray-400 hover:text-white transition",
+                    isCollapsed && "mx-auto"
+                  )}
+                >
+                  <Image
+                    src={
+                      isCollapsed
+                        ? "/Images/sidebar2.png"
+                        : "/Images/sidebar.png"
+                    }
+                    alt="sidebar icon"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                </button>
+              )}
+            </>
           )}
         </div>
 
         {/* New Chat Button */}
-        <div className="p-2 border-b border-[#30302E]">
+        <div className="p-2 border-b border-[#30302E] mt-1">
           <button
             onClick={handleNewChat}
             className={cn(

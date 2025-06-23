@@ -24,6 +24,10 @@ export default function RootLayout({
     <ConvexClientProvider>
       <html lang="en" suppressHydrationWarning>
         <body
+          style={{
+            background: "#30302E",
+            color: "var(--geist-foreground)",
+          }}
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           {children}

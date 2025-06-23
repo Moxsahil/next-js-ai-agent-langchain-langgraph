@@ -12,7 +12,7 @@ export default function LandingPage() {
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-7xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
             Moxsh AI
           </h1>
-          <p className="max-w-[600px] text-lg text-gray-300 md:text-xl/relaxed xl:text-2xl/relaxed">
+          <p className="max-w-[600px] text-lg text-gray-100 md:text-xl/relaxed xl:text-2xl/relaxed">
             Meet your new AI chat companion that goes beyond conversation - it
             can actually get things done!
             <br />

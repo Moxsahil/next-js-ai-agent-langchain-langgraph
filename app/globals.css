@@ -41,6 +41,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius: var(----radius);
 }
 
 :root {
@@ -119,4 +120,23 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Hide scrollbar by default, show on hover */
+.scrollbar-hide-until-hover::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-hide-until-hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  visibility: hidden;
+}
+.scrollbar-hide-until-hover:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+.scrollbar-hide-until-hover {
+  scrollbar-width: none; /* hide in Firefox by default */
+}
+.scrollbar-hide-until-hover:hover {
+  scrollbar-width: thin;
 }

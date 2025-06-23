@@ -12,7 +12,7 @@ interface ChatPageProps {
 }
 
 export default async function ChatPage({ params }: ChatPageProps) {
-  const { chatId } = await params;
+  const { chatId } = params;
 
   const { userId } = await auth();
 
@@ -45,5 +45,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
   } catch (error) {
     console.error("🔥 Error loading chat:", error);
     redirect("/dashboard");
+  } finally {
+    console.log("🚀 Chat page loaded");
   }
 }
