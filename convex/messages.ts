@@ -13,10 +13,10 @@ export const list = query({
       .collect();
 
     if (SHOW_COMMENTS) {
-      console.log("Retrieved messages: ", {
-        chatId: args.chatId,
-        count: messages.length,
-      });
+      // console.log("Retrieved messages: ", {
+      //   chatId: args.chatId,
+      //   count: messages.length,
+      // });
     }
     return messages;
   },

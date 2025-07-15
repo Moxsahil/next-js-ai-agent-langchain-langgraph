@@ -57,7 +57,7 @@ const initialiseModel = () => {
           // console.log("🤖 Starting LLM call");
         },
         handleLLMEnd: async (output) => {
-          console.log("🤖 End LLM call", output);
+          // console.log("🤖 End LLM call", output);
         },
       },
     ],
