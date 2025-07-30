@@ -98,6 +98,13 @@ if you want to use Open AI
 OPENAI_API_KEY=Your_open_ai_key
 
 ```
+When deploy on any platform of your choice, don't forget to use 
+
+```
+
+CONVEX_DEPLOY_KEY= your_convex_deploy_key
+
+```
 
 ## Installation
 
