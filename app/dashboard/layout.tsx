@@ -9,7 +9,7 @@ import { ReactNode } from "react";
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <NavigationProvider>
-      <div className="flex h-screen">
+      <div className="flex h-screen overflow-hidden">
         <Authenticated>
           <Sidebar />
         </Authenticated>

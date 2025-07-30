@@ -5,21 +5,31 @@ import {
   StreamMessage,
 } from "./types";
 
+/**
+ * Creates a parser for Server-Sent Events (SSE) streams.
+ * SSE allows real-time updates from server to client.
+ */
 export const createSSEParser = () => {
   let buffer = "";
 
   const parse = (chunk: string): StreamMessage[] => {
-    const lines = (buffer + chunk).split("\n");
+    // Add chunk to buffer
+    buffer += chunk;
 
-    buffer = lines.pop() || "";
+    // Split by double newlines (SSE_LINE_DELIMITER = "\n\n")
+    const messages = buffer.split("\n\n");
 
-    return lines
-      .map((line) => {
-        const trimmed = line.trim();
+    // Keep the last incomplete message in buffer
+    buffer = messages.pop() || "";
+
+    return messages
+      .map((message) => {
+        const trimmed = message.trim();
         if (!trimmed || !trimmed.startsWith(SSE_DATA_PREFIX)) return null;
-        const data = trimmed.substring(SSE_DATA_PREFIX.length);
 
-        if (data === SSE_DONE_MESSAGE) return { type: StreamMessageType.DONE };
+        const data = trimmed.substring(SSE_DATA_PREFIX.length);
+        if (data === SSE_DONE_MESSAGE) return { type: StreamMessageType.Done };
+
         try {
           const parsed = JSON.parse(data) as StreamMessage;
           return Object.values(StreamMessageType).includes(parsed.type)
@@ -27,7 +37,7 @@ export const createSSEParser = () => {
             : null;
         } catch {
           return {
-            type: StreamMessageType.ERROR,
+            type: StreamMessageType.Error,
             error: "Failed to parse SSE message",
           };
         }

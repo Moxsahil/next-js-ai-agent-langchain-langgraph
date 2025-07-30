@@ -1,5 +1,6 @@
 import { Id } from "@/convex/_generated/dataModel";
 
+// SSE Constants
 export const SSE_DATA_PREFIX = "data: " as const;
 export const SSE_DONE_MESSAGE = "[DONE]" as const;
 export const SSE_LINE_DELIMITER = "\n\n" as const;
@@ -13,9 +14,9 @@ export interface Message {
 
 export enum StreamMessageType {
   Token = "token",
-  DONE = "done",
-  ERROR = "error",
+  Error = "error",
   Connected = "connected",
+  Done = "done",
   ToolStart = "tool_start",
   ToolEnd = "tool_end",
 }
@@ -29,17 +30,17 @@ export interface TokenMessage extends BaseStreamMessage {
   token: string;
 }
 
-export interface DoneMessage extends BaseStreamMessage {
-  type: StreamMessageType.DONE;
-}
-
 export interface ErrorMessage extends BaseStreamMessage {
-  type: StreamMessageType.ERROR;
+  type: StreamMessageType.Error;
   error: string;
 }
 
 export interface ConnectedMessage extends BaseStreamMessage {
   type: StreamMessageType.Connected;
+}
+
+export interface DoneMessage extends BaseStreamMessage {
+  type: StreamMessageType.Done;
 }
 
 export interface ToolStartMessage extends BaseStreamMessage {
@@ -56,9 +57,9 @@ export interface ToolEndMessage extends BaseStreamMessage {
 
 export type StreamMessage =
   | TokenMessage
-  | DoneMessage
   | ErrorMessage
   | ConnectedMessage
+  | DoneMessage
   | ToolStartMessage
   | ToolEndMessage;
 
