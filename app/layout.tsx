@@ -24,11 +24,7 @@ export default function RootLayout({
     <ConvexClientProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          style={{
-            background: "#30302E",
-            color: "var(--geist-foreground)",
-          }}
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen overflow-y-auto scrollbar-hide-until-hover scroll-smooth`}
         >
           {children}
         </body>

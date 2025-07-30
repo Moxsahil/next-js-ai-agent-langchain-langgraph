@@ -140,3 +140,17 @@
 .scrollbar-hide-until-hover:hover {
   scrollbar-width: thin;
 }
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+}

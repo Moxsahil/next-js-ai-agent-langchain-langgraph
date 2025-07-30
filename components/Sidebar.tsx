@@ -33,7 +33,7 @@ function ChatRow({
 
   return (
     <div
-      className="group rounded-xl bg-[#30302E] backdrop-blur-sm hover:bg-[#1F1E1D] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
+      className="group rounded-xl bg-[#474747] backdrop-blur-sm hover:bg-[#1F1E1D] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
       onClick={handleClick}
     >
       <div className="p-2">
